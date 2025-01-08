@@ -45,6 +45,18 @@ local walls = {}
 walls.wall_thickness = 1
 walls.current_level_walls = {}
 
+local levels ={}
+levels.sequence = {}
+
+levels.sequence[1] = {
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0 },
+    { 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 },
+    { 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0 },
+    { 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0 },
+    { 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0 },
+}
+
 
 
 --[Funciones variables]
