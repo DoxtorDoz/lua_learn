@@ -27,7 +27,7 @@ local bricks = {}
 bricks.position_x = 100
 bricks.position_y = 100
 
-bricks.width = 50
+bricks.width = 40
 bricks.height = 30
 
 bricks.rows = 8
@@ -40,6 +40,7 @@ bricks.horizontal_distance = 10
 bricks.vertical_distance = 15
 
 bricks.current_level_bricks = {}
+bricks.no_more_bricks = false
 
 
 local walls = {}
@@ -47,7 +48,9 @@ walls.wall_thickness = 1
 walls.current_level_walls = {}
 
 local levels ={}
+levels.current_level = 1
 levels.sequence = {}
+levels.game_finished = false
 
 levels.sequence[1] = {
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -58,6 +61,17 @@ levels.sequence[1] = {
     { 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0 },
 }
 
+
+levels.sequence[2] = {
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1 },
+    { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0 },
+    { 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0 },
+    { 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 },
+    { 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+ }
 
 
 --[Funciones variables]
@@ -72,11 +86,15 @@ end
 
 function ball.draw()
     local segment_in_circle = 16
+    love.graphics.push()
+    love.graphics.setColor(1,0,0)
+    love.graphics.pop()
     love.graphics.circle('line',
         ball.position_x,
         ball.position_y,
         ball.radius,
         segment_in_circle)
+    
 end
 
 function ball.rebound(shift_ball_x, shift_ball_y)
@@ -96,6 +114,11 @@ function ball.rebound(shift_ball_x, shift_ball_y)
     end
 end
 
+function ball.reposition()
+    ball.position_x = 450
+    ball.position_y = 450
+end
+
 
 --> Platform
 
@@ -110,6 +133,7 @@ end
 
 
 function platform.draw()
+    love.graphics.setColor(255, 255, 255)
     love.graphics.rectangle('line',
         platform.position_x,
         platform.position_y,
@@ -117,14 +141,12 @@ function platform.draw()
         platform.height)
 end
 
---> Bricks
-
+--> Bricks 
 function bricks.draw()
     for _, brick in pairs(bricks.current_level_bricks) do
         bricks.draw_brick(brick)
     end
 end
-
 
 function bricks.new_brick(position_x, position_y, width, height)
     return({position_x = position_x, 
@@ -135,10 +157,11 @@ end
 
 
 function bricks.draw_brick(single_brick)
+    love.graphics.setColor(0, 0, 255)
     love.graphics.rectangle('line',
     single_brick.position_x,
     single_brick.position_y,
-    single_brick.width,
+    single_brick.width, 
     single_brick.height)
 end
 
@@ -153,21 +176,41 @@ end
 
 
 function bricks.update(dt)
-    for _, brick in pairs(bricks.current_level_bricks) do
-        bricks.update_brick(brick)
+    if  #bricks.current_level_bricks == 0 then
+        bricks.no_more_bricks = true
+    else
+        for _, brick in pairs(bricks.current_level_bricks) do
+            bricks.update_brick(brick)
+        end
     end
 end
 
 
-function bricks.construct_level()
+function bricks.construct_level(levels_arr)
+    --[[ Imprimir sin tabla (solo row y col)
+    
     for row = 1, bricks.rows do
         for col = 1, bricks.columns do
+
             local new_brick_position_x = bricks.top_left_position_x + (col - 1) * (bricks.width + bricks.horizontal_distance)
             local new_brick_position_y = bricks.top_left_position_y + (row - 1) * (bricks.height + bricks.vertical_distance)
             
             local new_brick = bricks.new_brick(new_brick_position_x, new_brick_position_y)
 
             bricks.add_to_current_level_bricks(new_brick)
+        end
+    end]]
+
+    for row_i, row in ipairs(levels_arr) do
+        for col_j, type in ipairs(row) do
+            if type ~= 0 then
+                local new_brick_position_x = bricks.top_left_position_x + (col_j - 1) * (bricks.width + bricks.horizontal_distance)
+                local new_brick_position_y = bricks.top_left_position_y + (row_i - 1) * (bricks.height + bricks.vertical_distance)
+                
+                local new_brick = bricks.new_brick(new_brick_position_x, new_brick_position_y)
+
+                bricks.add_to_current_level_bricks(new_brick)
+            end
         end
     end
 end
@@ -191,6 +234,7 @@ function walls.update_wall(single_wall)
 end
 
 function walls.draw_wall(single_wall)
+    love.graphics.setColor(255, 255, 255)
     love.graphics.rectangle(
     'line', 
     single_wall.position_x, 
@@ -392,12 +436,27 @@ function collisions.platform_walls_collisions(platform, walls)
 end
 
 
+--[Funciones niveles]
+
+function levels.switch_next_level(bricks)
+    if bricks.no_more_bricks then
+        if levels.current_level < #levels.sequence then
+            bricks.no_more_bricks = false
+            levels.current_level = levels.current_level + 1
+            bricks.construct_level(levels.sequence[levels.current_level])
+            ball.reposition()
+        else
+            levels.game_finished = true
+        end
+    end
+end
+
 
 
 --[Funciones Love]
 
 function love.load()
-    bricks.construct_level()
+    bricks.construct_level(levels.sequence[1])
     walls.construct_walls()
 end
 
@@ -407,6 +466,7 @@ function love.update(dt)
     bricks.update(dt)
     walls.update(dt)
     collisions.resolve_collisions()
+    levels.switch_next_level(bricks)
 end
 
 
@@ -415,6 +475,11 @@ function love.draw()
     platform.draw()
     bricks.draw()
     walls.draw()
+    if levels.game_finished then
+        love.graphics.printf( "Congratulations!\n" ..
+			"You have finished the game!",
+			300, 250, 200, "center" )
+    end
 end
 
 function love.keyreleased(key, code)
