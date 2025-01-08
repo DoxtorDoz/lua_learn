@@ -1,6 +1,7 @@
 
 rebote = love.audio.newSource("rebote.mp3", "static")
 explosion = love.audio.newSource("brick_exp.mp3", "static")
+pared = love.audio.newSource("rebote.mp3", "static")
 
 --[Variables y Objetos]
 
@@ -295,8 +296,12 @@ function collisions.ball_platform_collision(ball, platform)
     local overlap, shift_ball_x, shift_ball_y = collisions.check_rectangles_overlap(b,a)
     if overlap then
         ball.rebound(shift_ball_x, shift_ball_y)
+        if rebote:isPlaying() then
+            rebote:stop()
+        end
         rebote:setPitch(1)
         rebote:play()
+        
     end
 
     if collisions.check_rectangles_overlap(a,b) then
@@ -321,6 +326,10 @@ function collisions.ball_bricks_collision(ball, bricks)
             print("Colision entre bola y ladrillo")
             ball.rebound(shift_ball_x, shift_ball_y)
             bricks.remove_brick(i)
+
+            if explosion:isPlaying() then
+                explosion:stop()
+            end
             explosion:play()
         end
     end
@@ -343,6 +352,9 @@ function collisions.ball_walls_collision(ball, brick)
         if overlap then
             print("Colision entre bola y pared")
             ball.rebound(shift_ball_x, shift_ball_y)
+            if rebote:isPlaying() then
+                rebote:stop()
+            end
             rebote:setPitch(0.5)
             rebote:play()
         end
@@ -369,6 +381,11 @@ function collisions.platform_walls_collisions(platform, walls)
             else
                 platform.position_x = platform.position_x + 20
             end
+            if pared:isPlaying() then
+                pared:stop()
+            end
+            pared:setPitch(2)
+            pared:play()
             print("Colision entre bola y pared")
         end
     end
@@ -410,4 +427,4 @@ function love.conf(t)
     t.console  = true
 end
 
-love._openConsole()
+--love._openConsole()
