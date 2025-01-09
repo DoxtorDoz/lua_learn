@@ -1,13 +1,12 @@
-local ball = require "ball"
-local platform = require "platform"
-local bricks = require "bricks"
-local walls = require "walls"
-local levels = require "levels"
-local collisions = require "collisions"
+local ball = require "/components/ball"
+local platform = require "/components/platform"
+local bricks = require "/components/bricks"
+local walls = require "/components/walls"
+local levels = require "/logic/levels"
+local collisions = require "/logic/collisions"
+local gamestate = require "logic/gamestate"
 
-rebote = love.audio.newSource("rebote.mp3", "static")
-explosion = love.audio.newSource("brick_exp.mp3", "static")
-pared = love.audio.newSource("rebote.mp3", "static")
+
 
 function love.load()
     bricks.construct_level(levels.sequence[1])

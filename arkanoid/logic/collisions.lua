@@ -1,4 +1,5 @@
 
+local sounds = require "sounds"
 local collisions = {}
 
 function collisions.resolve_collisions(ball, platform, walls, bricks)
@@ -44,11 +45,11 @@ function collisions.ball_platform_collision(ball, platform)
     local overlap, shift_ball_x, shift_ball_y = collisions.check_rectangles_overlap(b,a)
     if overlap then
         ball.rebound(shift_ball_x, shift_ball_y)
-        if rebote:isPlaying() then
-            rebote:stop()
+        if sounds.rebote:isPlaying() then
+            sounds.rebote:stop()
         end
-        rebote:setPitch(1)
-        rebote:play()
+        sounds.rebote:setPitch(1)
+        sounds.rebote:play()
         
     end
 
@@ -75,10 +76,10 @@ function collisions.ball_bricks_collision(ball, bricks)
             ball.rebound(shift_ball_x, shift_ball_y)
             bricks.remove_brick(i)
 
-            if explosion:isPlaying() then
-                explosion:stop()
+            if sounds.explosion:isPlaying() then
+                sounds.explosion:stop()
             end
-            explosion:play()
+            sounds.explosion:play()
         end
     end
 end
@@ -100,11 +101,11 @@ function collisions.ball_walls_collision(ball, walls)
         if overlap then
             print("Colision entre bola y pared")
             ball.rebound(shift_ball_x, shift_ball_y)
-            if rebote:isPlaying() then
-                rebote:stop()
+            if sounds.rebote:isPlaying() then
+                sounds.rebote:stop()
             end
-            rebote:setPitch(0.5)
-            rebote:play()
+            sounds.rebote:setPitch(0.5)
+            sounds.rebote:play()
         end
     end
 end
