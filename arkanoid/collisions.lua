@@ -1,0 +1,142 @@
+
+local collisions = {}
+
+function collisions.resolve_collisions(ball, platform, walls, bricks)
+    collisions.ball_platform_collision(ball, platform)
+    collisions.ball_walls_collision(ball, walls)
+    collisions.ball_bricks_collision(ball, bricks)
+    collisions.platform_walls_collisions(platform, walls)
+end
+
+function collisions.check_rectangles_overlap(a,b)
+    local overlap = false
+    local shift_b_x, shift_b_y = 0, 0
+    if not(a.x + a.width < b.x or b.x + b.width < a.x or 
+    a.y + a.height< b.y or b.y + b.height < a.y) then
+        overlap = true
+        if(a.x + a.width / 2) < (b.x + b.width/2) then
+            shift_b_x = (a.x + a.width) - b.x
+        else
+            shift_b_x = a.x - (b.x + b.width)
+        end
+        if(a.y + a.height / 2) < (b.y + b.height/2) then
+            shift_b_y = (a.y + a.height) - b.y
+        else
+            shift_b_y = a.y - (b.y + b.height)
+        end
+    end
+    return overlap, shift_b_x, shift_b_y
+end
+
+
+function collisions.ball_platform_collision(ball, platform)
+
+    local a = {x = ball.position_x, 
+        y = ball.position_y, 
+        width = 2 * ball.radius, 
+        height = 2 * ball.radius}
+
+    local b = {x = platform.position_x, 
+        y = platform.position_y, 
+        width = platform.width, 
+        height = platform.height}
+
+    local overlap, shift_ball_x, shift_ball_y = collisions.check_rectangles_overlap(b,a)
+    if overlap then
+        ball.rebound(shift_ball_x, shift_ball_y)
+        if rebote:isPlaying() then
+            rebote:stop()
+        end
+        rebote:setPitch(1)
+        rebote:play()
+        
+    end
+
+    if collisions.check_rectangles_overlap(a,b) then
+        print("Colision entre bola y plataforma")
+    end
+end
+
+function collisions.ball_bricks_collision(ball, bricks)
+    local a = {x = ball.position_x, 
+    y = ball.position_y, 
+    width = 2 * ball.radius, 
+    height = 2 * ball.radius}
+
+    for i, brick in pairs(bricks.current_level_bricks) do
+        local b = {x = brick.position_x,
+        y = brick.position_y,
+        width = brick.width,
+        height = brick.height}
+
+        local overlap, shift_ball_x, shift_ball_y = collisions.check_rectangles_overlap(b,a)
+        if overlap then
+            print("Colision entre bola y ladrillo")
+            ball.rebound(shift_ball_x, shift_ball_y)
+            bricks.remove_brick(i)
+
+            if explosion:isPlaying() then
+                explosion:stop()
+            end
+            explosion:play()
+        end
+    end
+end
+
+function collisions.ball_walls_collision(ball, walls)
+    local a = {x = ball.position_x, 
+    y = ball.position_y, 
+    width = 2 * ball.radius, 
+    height = 2 * ball.radius}
+
+    for i, wall in pairs(walls.current_level_walls) do
+        local b = {x = wall.position_x,
+        y = wall.position_y,
+        width = wall.width,
+        height = wall.height}
+
+        local overlap, shift_ball_x, shift_ball_y = collisions.check_rectangles_overlap(b,a)
+
+        if overlap then
+            print("Colision entre bola y pared")
+            ball.rebound(shift_ball_x, shift_ball_y)
+            if rebote:isPlaying() then
+                rebote:stop()
+            end
+            rebote:setPitch(0.5)
+            rebote:play()
+        end
+    end
+end
+
+
+
+function collisions.platform_walls_collisions(platform, walls)
+    local a = {x = platform.position_x, 
+    y = platform.position_y, 
+    width = platform.width, 
+    height = platform.height}
+
+    for i, wall in pairs(walls.current_level_walls) do
+        local b = {x = wall.position_x,
+        y = wall.position_y,
+        width = wall.width,
+        height = wall.height}
+
+        if collisions.check_rectangles_overlap(a, b) then
+            if platform.position_x > 10 then
+                platform.position_x = platform.position_x - 20
+            else
+                platform.position_x = platform.position_x + 20
+            end
+            if pared:isPlaying() then
+                pared:stop()
+            end
+            pared:setPitch(2)
+            pared:play()
+            print("Colision entre bola y pared")
+        end
+    end
+end
+
+return collisions
