@@ -31,8 +31,9 @@ levels.sequence[2] = {
             levels.current_level = levels.current_level + 1
             bricks.construct_level(levels.sequence[levels.current_level])
             ball.reposition()
-        else
+        elseif levels.current_level <= #levels.sequence then
             levels.game_finished = true
+           
         end
     end
 end

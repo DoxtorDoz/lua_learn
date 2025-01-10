@@ -40,7 +40,8 @@ function collisions.ball_platform_collision(ball, platform)
     local b = {x = platform.position_x, 
         y = platform.position_y, 
         width = platform.width, 
-        height = platform.height}
+        --Para evitar que sobrepase el dibujado de la plataforma por abajo
+        height = 2*platform.height}
 
     local overlap, shift_ball_x, shift_ball_y = collisions.check_rectangles_overlap(b,a)
     if overlap then
@@ -93,8 +94,9 @@ function collisions.ball_walls_collision(ball, walls)
     for i, wall in pairs(walls.current_level_walls) do
         local b = {x = wall.position_x,
         y = wall.position_y,
-        width = wall.width,
-        height = wall.height}
+        --Para respetar la separacionde las paredes con la ventana, se añade el grosor/2
+        width = wall.width + walls.wall_thickness / 2,
+        height = wall.height + walls.wall_thickness / 2}
 
         local overlap, shift_ball_x, shift_ball_y = collisions.check_rectangles_overlap(b,a)
 
@@ -125,16 +127,16 @@ function collisions.platform_walls_collisions(platform, walls)
         height = wall.height}
 
         if collisions.check_rectangles_overlap(a, b) then
-            if platform.position_x > 10 then
+            if platform.position_x > 20 then
                 platform.position_x = platform.position_x - 20
             else
                 platform.position_x = platform.position_x + 20
             end
-            if pared:isPlaying() then
-                pared:stop()
+            if sounds.pared:isPlaying() then
+                sounds.pared:stop()
             end
-            pared:setPitch(2)
-            pared:play()
+            sounds.pared:setPitch(2)
+            sounds.pared:play()
             print("Colision entre bola y pared")
         end
     end

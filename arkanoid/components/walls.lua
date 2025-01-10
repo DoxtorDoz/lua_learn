@@ -1,5 +1,5 @@
 local walls = {}
-walls.wall_thickness = 1
+walls.wall_thickness = 20
 walls.current_level_walls = {}
 
 
