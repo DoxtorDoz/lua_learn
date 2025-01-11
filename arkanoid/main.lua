@@ -4,14 +4,18 @@ local bricks = require "/components/bricks"
 local walls = require "/components/walls"
 local levels = require "/logic/levels"
 local collisions = require "/logic/collisions"
+local menu = require "/components/menu"
 
 local gamestate = "menu"
 
 
 
 function love.load()
+    levels.load()
     bricks.construct_level(levels.sequence[1])
     walls.construct_walls()
+    
+
 end
 
 function love.update(dt)
@@ -37,18 +41,15 @@ end
 
 function love.draw()
     if gamestate == "menu" then
-        love.graphics.printf( "Arkanoide :D\n" ..
-			"Arkanoide en Lua y Love2D\n"..
-            "Pulsa [Enter] para comenzar",
-			300, 250, 200, "center" )
+        menu.draw()
     elseif gamestate == "pause" then
         ball.draw()
         platform.draw()
         bricks.draw()
         walls.draw()
     love.graphics.print(
-         "Juego pausado. Pulsa [Enter] para continuar, [ESC] para salir",
-         50, 50)
+        "Juego pausado. Pulsa [Enter] para continuar, [ESC] para salir",
+        50, 50)
     elseif gamestate == "game" then
         ball.draw()
         platform.draw()
@@ -61,7 +62,7 @@ function love.draw()
     end
     
     -- if levels.game_finished then
-       
+
     -- end
 end
 

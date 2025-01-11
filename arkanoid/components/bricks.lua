@@ -2,13 +2,13 @@ local bricks = {}
 bricks.position_x = 100
 bricks.position_y = 100
 
-bricks.width = 40
+bricks.width = 35
 bricks.height = 30
 
 bricks.rows = 8
 bricks.columns = 11
 
-bricks.top_left_position_x = 70
+bricks.top_left_position_x = 10
 bricks.top_left_position_y = 50
 
 bricks.horizontal_distance = 10
@@ -78,7 +78,7 @@ function bricks.construct_level(levels_arr)
 
     for row_i, row in ipairs(levels_arr) do
         for col_j, type in ipairs(row) do
-            if type ~= 0 then
+            if type == 1 then
                 local new_brick_position_x = bricks.top_left_position_x + (col_j - 1) * (bricks.width + bricks.horizontal_distance)
                 local new_brick_position_y = bricks.top_left_position_y + (row_i - 1) * (bricks.height + bricks.vertical_distance)
                 
