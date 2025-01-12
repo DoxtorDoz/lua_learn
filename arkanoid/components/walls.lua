@@ -29,12 +29,13 @@ function walls.draw()
 end
 
 
-function walls.new_wall(position_x, position_y, width, height, color)
+function walls.new_wall(position_x, position_y, width, height, color, death)
     return({position_x = position_x, 
     position_y = position_y,
     width = width,
     height = height,
-    color = color})
+    color = color,
+    death = death})
 end
 
 
@@ -44,7 +45,8 @@ function walls.construct_walls()
         0,
         1,
         love.graphics.getHeight(),
-        {255, 255, 255}
+        {255, 255, 255},
+        false
     )
 
     local right_wall = walls.new_wall(
@@ -52,7 +54,8 @@ function walls.construct_walls()
         0,
         1,
         love.graphics.getHeight(),
-        {255, 255, 255}
+        {255, 255, 255},
+        false
     )
 
     local top_wall = walls.new_wall(
@@ -60,7 +63,7 @@ function walls.construct_walls()
         0,
         love.graphics.getWidth(), 
         1,
-        {255, 255, 255}
+        {255, 255, 255}, false
     )
 
     local bottom_wall = walls.new_wall(
@@ -68,7 +71,8 @@ function walls.construct_walls()
         love.graphics.getHeight(),
         love.graphics.getWidth() ,
         1,
-        {255, 0, 0}
+        {255, 0, 0},
+        true
     )
 
     walls.current_level_walls["left"] = left_wall

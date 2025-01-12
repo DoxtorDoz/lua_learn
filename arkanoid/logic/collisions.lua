@@ -1,6 +1,8 @@
 
 local sounds = require "sounds"
 local score  = require "/logic/score"
+local lives = require "/logic/lives"
+
 local collisions = {}
 
 function collisions.resolve_collisions(ball, platform, walls, bricks)
@@ -114,13 +116,18 @@ function collisions.ball_walls_collision(ball, walls)
         local overlap, shift_ball_x, shift_ball_y = collisions.check_rectangles_overlap(b,a)
 
         if overlap then
-            print("Colision entre bola y pared")
-            ball.rebound(shift_ball_x, shift_ball_y)
-            if sounds.rebote:isPlaying() then
-                sounds.rebote:stop()
+            if wall.death then
+                lives.lose_life()
+                ball.reposition()
+            else
+                print("Colision entre bola y pared")
+                ball.rebound(shift_ball_x, shift_ball_y)
+                if sounds.rebote:isPlaying() then
+                    sounds.rebote:stop()
+                end
+                sounds.rebote:setPitch(0.5)
+                sounds.rebote:play()
             end
-            sounds.rebote:setPitch(0.5)
-            sounds.rebote:play()
         end
     end
 end
@@ -138,20 +145,24 @@ function collisions.platform_walls_collisions(platform, walls)
         y = wall.position_y,
         width = wall.width,
         height = wall.height}
-
-        if collisions.check_rectangles_overlap(a, b) then
-            if platform.position_x > 20 then
-                platform.position_x = platform.position_x - 20
-            else
-                platform.position_x = platform.position_x + 20
+        if wall.death then
+            
+        else
+            if collisions.check_rectangles_overlap(a, b) then
+                if platform.position_x > 20 then
+                    platform.position_x = platform.position_x - 20
+                else
+                    platform.position_x = platform.position_x + 20
+                end
+                if sounds.pared:isPlaying() then
+                    sounds.pared:stop()
+                end
+                sounds.pared:setPitch(2)
+                sounds.pared:play()
+                print("Colision entre bola y pared")
             end
-            if sounds.pared:isPlaying() then
-                sounds.pared:stop()
-            end
-            sounds.pared:setPitch(2)
-            sounds.pared:play()
-            print("Colision entre bola y pared")
         end
+        
     end
 end
 
