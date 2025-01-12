@@ -1,14 +1,19 @@
+local tf = require "/utils/textfield"
+
 local score = {}
 score.score = 0
+local name = ""
 local score_font = love.graphics.newFont(20)
 
 function score.load()
     local score_font = love.graphics.newFont(20)
+   -- name = tf.getTexto()
 end
 
 function score.draw()
     love.graphics.setFont(score_font)
-    love.graphics.printf("Score\n"..score.score, 550, 20,200,"right")
+    love.graphics.printf(tf.getTexto(), 550, 10, 200, "right")
+    love.graphics.printf("Score\n"..score.score, 550, 30,200,"right")
 end
 
 function score.update()

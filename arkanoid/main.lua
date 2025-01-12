@@ -14,9 +14,11 @@ local gamestate = "menu"
 
 
 function love.load()
+    menu.load()
     levels.load()
     bricks.construct_level(levels.sequence[1])
     walls.construct_walls()
+    score.load()
 end
 
 function love.update(dt)
