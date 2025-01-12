@@ -1,9 +1,15 @@
+local colors = require "/components/colors"
+
 local bricks = {}
 bricks.position_x = 100
 bricks.position_y = 100
 
 bricks.width = 35
 bricks.height = 30
+
+-- 0 for none, 1,2,3,... <-- durability of the brick
+
+bricks.type = 0
 
 bricks.rows = 8
 bricks.columns = 11
@@ -23,16 +29,19 @@ function bricks.draw()
     end
 end
 
-function bricks.new_brick(position_x, position_y, width, height)
+function bricks.new_brick(position_x, position_y, width, height, type)
     return({position_x = position_x, 
     position_y = position_y, 
     width = width or bricks.width,
-    height = height or bricks.height})
+    height = height or bricks.height,
+    type = type})
 end
 
 
 function bricks.draw_brick(single_brick)
-    love.graphics.setColor(0, 0, 255)
+    --love.graphics.setColor(0, 0, 255)
+    local color = colors.colors[single_brick.type]
+    love.graphics.setColor(color[1], color[2], color[3])
     love.graphics.rectangle('line',
     single_brick.position_x,
     single_brick.position_y,
@@ -42,6 +51,7 @@ end
 
 
 function bricks.update_brick(single_brick)
+    bricks.draw_brick(single_brick)
 end
 
 
@@ -78,16 +88,22 @@ function bricks.construct_level(levels_arr)
 
     for row_i, row in ipairs(levels_arr) do
         for col_j, type in ipairs(row) do
-            if type == 1 then
+            if type ~= 0 then
                 local new_brick_position_x = bricks.top_left_position_x + (col_j - 1) * (bricks.width + bricks.horizontal_distance)
                 local new_brick_position_y = bricks.top_left_position_y + (row_i - 1) * (bricks.height + bricks.vertical_distance)
                 
-                local new_brick = bricks.new_brick(new_brick_position_x, new_brick_position_y)
+                local new_brick = bricks.new_brick(new_brick_position_x, new_brick_position_y, bricks.width,bricks.height,levels_arr[row_i][col_j])
 
                 bricks.add_to_current_level_bricks(new_brick)
             end
         end
     end
+end
+
+function bricks.degrade_brick(pos, brick)
+    print("ladrillo degradado")
+    bricks.current_level_bricks[pos].type = brick.type - 1
+    bricks.update()
 end
 
 function bricks.remove_brick(brick)

@@ -5,16 +5,18 @@ local walls = require "/components/walls"
 local levels = require "/logic/levels"
 local collisions = require "/logic/collisions"
 local menu = require "/components/menu"
+local score = require "/logic/score"
+--local colors = require "/components/colors"
 
 local gamestate = "menu"
 
 
 
 function love.load()
+
     levels.load()
     bricks.construct_level(levels.sequence[1])
     walls.construct_walls()
-    
 
 end
 
@@ -32,6 +34,7 @@ function love.update(dt)
         walls.update(dt)
         collisions.resolve_collisions(ball, platform, walls, bricks)
         levels.switch_next_level(bricks, ball)
+        score.update()
     elseif gamestate == "finished" then
 
     end
@@ -55,15 +58,12 @@ function love.draw()
         platform.draw()
         bricks.draw()
         walls.draw()
+        score.draw()
     elseif gamestate == "finished" then
         love.graphics.printf( "Congratulations!\n" ..
         "You have finished the game!",
         300, 250, 200, "center" )
     end
-    
-    -- if levels.game_finished then
-
-    -- end
 end
 
 function love.keyreleased(key, code)
@@ -91,11 +91,10 @@ function love.keyreleased(key, code)
             love.event.quit()
         end
     end
-   
 end
 
 function love.conf(t)
     t.console  = true
 end
 
---love._openConsole()
+love._openConsole()

@@ -1,5 +1,6 @@
 
 local sounds = require "sounds"
+local score  = require "/logic/score"
 local collisions = {}
 
 function collisions.resolve_collisions(ball, platform, walls, bricks)
@@ -75,12 +76,24 @@ function collisions.ball_bricks_collision(ball, bricks)
         if overlap then
             print("Colision entre bola y ladrillo")
             ball.rebound(shift_ball_x, shift_ball_y)
-            bricks.remove_brick(i)
-
-            if sounds.explosion:isPlaying() then
-                sounds.explosion:stop()
+            score.incrementScore(brick.type)
+            if brick.type > 1 then
+                bricks.degrade_brick(i, brick)
+                if sounds.explosion:isPlaying() then
+                    sounds.explosion:stop()
+                end
+                sounds.explosion:setPitch(5)
+                sounds.explosion:play()
+            else
+                bricks.remove_brick(i)
+                if sounds.explosion:isPlaying() then
+                    sounds.explosion:stop()
+                end
+                sounds.explosion:setPitch(1)
+                sounds.explosion:play()
             end
-            sounds.explosion:play()
+                
+
         end
     end
 end

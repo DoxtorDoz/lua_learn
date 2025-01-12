@@ -14,9 +14,7 @@ end
 
 function ball.draw()
     local segment_in_circle = 16
-    love.graphics.push()
     love.graphics.setColor(1,0,0)
-    love.graphics.pop()
     love.graphics.circle('line',
         ball.position_x,
         ball.position_y,
