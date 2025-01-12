@@ -27,8 +27,9 @@ function love.update(dt)
         --empty
     elseif gamestate == "pause" then
     elseif gamestate == "game" then
-        ball.update(dt)
         platform.update(dt)
+        ball.update(dt, platform)
+        
         bricks.update(dt)
         walls.update(dt)
         collisions.resolve_collisions(ball, platform, walls, bricks)
@@ -75,6 +76,7 @@ function love.draw()
         300, 250, 200, "center" )
     end
 end
+--[[Control de eventos]]
 
 function love.keyreleased(key, code)
     if gamestate == "menu" then
@@ -85,6 +87,7 @@ function love.keyreleased(key, code)
         if key == "escape" then
             gamestate = "pause"
         end
+        
     elseif gamestate == "pause" then
         if key == "return" then
             gamestate = "game"

@@ -7,7 +7,7 @@ local collisions = {}
 
 function collisions.resolve_collisions(ball, platform, walls, bricks)
     collisions.ball_platform_collision(ball, platform)
-    collisions.ball_walls_collision(ball, walls)
+    collisions.ball_walls_collision(ball, walls, platform)
     collisions.ball_bricks_collision(ball, bricks)
     collisions.platform_walls_collisions(platform, walls)
 end
@@ -100,7 +100,7 @@ function collisions.ball_bricks_collision(ball, bricks)
     end
 end
 
-function collisions.ball_walls_collision(ball, walls)
+function collisions.ball_walls_collision(ball, walls, platform)
     local a = {x = ball.position_x, 
     y = ball.position_y, 
     width = 2 * ball.radius, 
@@ -118,7 +118,7 @@ function collisions.ball_walls_collision(ball, walls)
         if overlap then
             if wall.death then
                 lives.lose_life()
-                ball.reposition()
+                ball.stick_to_platform(platform)
             else
                 print("Colision entre bola y pared")
                 ball.rebound(shift_ball_x, shift_ball_y)
