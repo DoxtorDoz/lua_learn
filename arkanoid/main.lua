@@ -7,9 +7,11 @@ local collisions = require "/logic/collisions"
 local menu = require "/components/menu"
 local score = require "/logic/score"
 local lives = require "/logic/lives"
+local gameover = require "/components/gameover"
 --local colors = require "/components/colors"
 
 local gamestate = "menu"
+local t = true
 
 
 
@@ -18,7 +20,6 @@ function love.load()
     levels.load()
     bricks.construct_level(levels.sequence[1])
     walls.construct_walls()
-    score.load()
 end
 
 function love.update(dt)
@@ -29,6 +30,12 @@ function love.update(dt)
         --empty
     elseif gamestate == "pause" then
     elseif gamestate == "game" then
+        if t then --Para obtener el nombre sin llamar al metodo 9 millones de veces.
+                    --Seguramente se pueda hacer mejor de otra forma
+            t = false
+            score.load()
+        --lives.update()
+        end
         platform.update(dt)
         ball.update(dt, platform)
         
@@ -37,7 +44,6 @@ function love.update(dt)
         collisions.resolve_collisions(ball, platform, walls, bricks)
         levels.switch_next_level(bricks, ball)
         score.update()
-        --lives.update()
     elseif gamestate == "finished" then
     end
 
@@ -72,10 +78,7 @@ function love.draw()
         "You have finished the game!",
         300, 250, 200, "center" )
     elseif gamestate == "game_over" then
-        --gameover.draw()
-        love.graphics.printf( "Game over!\n" ..
-        "You have lost to the game!",
-        300, 250, 200, "center" )
+        gameover.draw()
     end
 end
 --[[Control de eventos]]
@@ -110,6 +113,7 @@ end
 
 function love.conf(t)
     t.console  = true
+    --t.window.setTitle("Arkanoide")
 end
 
 love._openConsole()

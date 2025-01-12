@@ -1,4 +1,4 @@
-local colors = require "/components/colors"
+local colors = require "/utils/colors"
 
 local bricks = {}
 bricks.position_x = 100

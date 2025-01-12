@@ -1,5 +1,4 @@
 local tf = require "/utils/textfield"
-local label  = require "/utils/label"
 
 local menu = {}
 
@@ -14,7 +13,7 @@ end
 
 function menu.draw()
     --label.draw("Nombre:",200, 200)
-    tf.draw_with_label("Nombre", 200, 200, 100, 30)
+    tf.draw_with_label("Nombre", 10, 40, 100, 30)
     love.graphics.printf( "Arkanoide :D\n" ..
     "Arkanoide en Lua y Love2D\n"..
     "Pulsa [Enter] para comenzar",
