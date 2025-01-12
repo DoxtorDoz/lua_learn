@@ -6,6 +6,7 @@ local levels = require "/logic/levels"
 local collisions = require "/logic/collisions"
 local menu = require "/components/menu"
 local score = require "/logic/score"
+local lives = require "/logic/lives"
 --local colors = require "/components/colors"
 
 local gamestate = "menu"
@@ -13,11 +14,9 @@ local gamestate = "menu"
 
 
 function love.load()
-
     levels.load()
     bricks.construct_level(levels.sequence[1])
     walls.construct_walls()
-
 end
 
 function love.update(dt)
@@ -35,8 +34,12 @@ function love.update(dt)
         collisions.resolve_collisions(ball, platform, walls, bricks)
         levels.switch_next_level(bricks, ball)
         score.update()
+        --lives.update()
     elseif gamestate == "finished" then
+    end
 
+    if lives.lives == 0 then
+        gamestate ="game_over"
     end
     
 end
@@ -50,6 +53,7 @@ function love.draw()
         platform.draw()
         bricks.draw()
         walls.draw()
+        lives.draw()
     love.graphics.print(
         "Juego pausado. Pulsa [Enter] para continuar, [ESC] para salir",
         50, 50)
@@ -59,9 +63,15 @@ function love.draw()
         bricks.draw()
         walls.draw()
         score.draw()
+        lives.draw()
     elseif gamestate == "finished" then
         love.graphics.printf( "Congratulations!\n" ..
         "You have finished the game!",
+        300, 250, 200, "center" )
+    elseif gamestate == "game_over" then
+        --gameover.draw()
+        love.graphics.printf( "Game over!\n" ..
+        "You have lost to the game!",
         300, 250, 200, "center" )
     end
 end
