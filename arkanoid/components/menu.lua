@@ -13,6 +13,7 @@ menu.opciones = 0
 function menu.load()
     menu.usuario = tf.new("Nombre",30, 50, 200, 30)
     table.insert(menu.textfields, menu.usuario)
+    table.insert(menu.textfields, tf.new("Cumpleaños",30, 100, 200, 30))
     
     table.insert(menu.buttons, bt.new(350,320,100,40,"Comenzar",function ()
         menu.opciones = 1

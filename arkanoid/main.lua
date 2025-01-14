@@ -14,9 +14,6 @@ local button = require "/utils/button"
 local gamestate = "menu"
 local t = true
 
-
-
-
 function love.load()
     menu.load()
     levels.load()
@@ -95,9 +92,9 @@ end
 
 function love.keyreleased(key, code)
     if gamestate == "menu" then
-        if key == "return" then
+        --[[ if key == "return" then
             gamestate = "game"
-        end
+        end ]]
     elseif gamestate == "game" then
         if key == "escape" then
             gamestate = "pause"
