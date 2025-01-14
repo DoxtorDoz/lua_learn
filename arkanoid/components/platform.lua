@@ -1,7 +1,7 @@
 local platform = {}
 platform.position_x = 500
 platform.position_y = 500
-platform.speed_x = 300
+platform.speed_x = 400
 
 platform.width  = 140
 platform.height = 20

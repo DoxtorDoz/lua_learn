@@ -1,5 +1,6 @@
 local label = require "/utils/label"
 
+
 local textfield = {}
 textfield.position_x = 10
 textfield.position_y = 20
@@ -7,7 +8,7 @@ textfield.width = 100
 textfield.height = 50
 
 
-textfield.isFocused = true
+textfield.isFocused = false
 textfield.inputText = ""
 
 function textfield.values(x, y, w, h)

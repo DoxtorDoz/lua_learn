@@ -8,10 +8,12 @@ local menu = require "/components/menu"
 local score = require "/logic/score"
 local lives = require "/logic/lives"
 local gameover = require "/components/gameover"
---local colors = require "/components/colors"
+local button = require "/utils/button"
 
+--local colors = require "/components/colors"
 local gamestate = "menu"
 local t = true
+
 
 
 
@@ -23,11 +25,19 @@ function love.load()
 end
 
 function love.update(dt)
+    
+    --button:update(dt)
     if levels.game_finished then
         gamestate = "finished"
     end
     if gamestate == "menu" then
         --empty
+        menu.update()
+        if menu.opciones == 1 then
+            gamestate = "game"
+        elseif menu.opciones == -1 then
+            love.event.quit()
+        end
     elseif gamestate == "pause" then
     elseif gamestate == "game" then
         if t then --Para obtener el nombre sin llamar al metodo 9 millones de veces.

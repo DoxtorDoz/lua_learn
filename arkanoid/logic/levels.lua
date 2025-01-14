@@ -1,3 +1,4 @@
+local platform = require "/components/platform"
 local levels ={}
 levels.current_level = 1
 levels.sequence = {}
@@ -51,7 +52,7 @@ function levels.switch_next_level(bricks, ball)
             bricks.no_more_bricks = false
             levels.current_level = levels.current_level + 1
             bricks.construct_level(levels.sequence[levels.current_level])
-            ball.reposition()
+            ball.stick_to_platform(platform)
         elseif levels.current_level <= #levels.sequence then
             levels.game_finished = true
 

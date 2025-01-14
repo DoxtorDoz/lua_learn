@@ -1,21 +1,63 @@
-local button = {}
+local Button = {}
 
-button.position_x = 100
-button.position_y  = 100
-button.width = 100
-button.height = 100
-button.text = ""
+Button.__index = Button
 
-function button.newButton(x, y, w, h, txt)
-
+--TODO: Hacer que onClick sea una lista para poder tener 3 posibles acciones para cada boton del raton
+function Button.new(x, y, w, h, text, onClick)
+    local self = setmetatable({}, Button)
+    self.position_x = x
+    self.position_y = y
+    self.width = w
+    self.height = h
+    self.text = text
+    self.onClick = onClick or  function () print("click") end
+    self.isHovered = false
+    return self
 end
 
-function button.newRectangleButton()
+function Button.drawButtons(list)
+    for _, button in ipairs(list) do
+        button:draw()
+    end
+end
+
+
+function Button:draw()
+    love.graphics.rectangle("line", self.position_x, self.position_y, self.width, self.height)
+    
+    love.graphics.print(self.text, self.position_x + self.width / 2, self.position_y + self.height / 2)
+end
+
+function Button:update()
+    local mouseX, mouseY = love.mouse.getPosition()
+    self.isHovered = mouseX > self.position_x 
+        and mouseX <= self.position_x + self.width
+        and mouseY > self.position_y
+        and mouseY <= self.position_y + self.height    
+        if self.isHovered then
+            --print("Encima")
+            self:mousepressed()
+        end
+end
+
+function Button:mousepressed()
+    --print("hamza")
+    if love.mouse.isDown(1) then
+        self.onClick()
+        return
+    end
+    if love.mouse.isDown(2) then
+        self.onClick()
+        return
+    end
+
+    if love.mouse.isDown(3) then
+        self.onClick()
+        return
+    end
+
     
 end
 
-function  button.draw()
-    
-end
 
-return button
+return Button
