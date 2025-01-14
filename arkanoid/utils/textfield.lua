@@ -24,6 +24,8 @@ function TextField.drawTextFields(list)
     
 end
 
+--TODO: ARREGAR PARA DEJAR DE TENER FOCUSEADO EL CAMPO DE TEXTO AL HACER CLICK O ENTER
+--TODO: ANADIR TAMBIEN EL BORRADO COMO ANTES
 function TextField:update()
     local mouseX, mouseY = love.mouse.getPosition()
     local mousepressed = love.mouse.isDown(1)
@@ -35,6 +37,10 @@ function TextField:update()
             --print("Encima")
             --self:mousepressed()
             self.isFocused = true
+            function love.textinput(t)
+                print("escribendo")
+                self.inputText = self.inputText .. t
+            end
         elseif mousepressed then
             self.isFocused = false
         end
@@ -60,48 +66,6 @@ function TextField:draw()
     love.graphics.print(self.inputText, self.position_x + 10, self.position_y - self.height/3)
 end
 
---[[ function TextField:mousepressed()
-    if love.mouse.isDown(1) then
-        print("click")
-        self.isFocused = true
-    else
-        self.isFocused = true
-    end
-end ]]
-
---[[ function TextField:handleInput(t)
-    if self.isFocused then
-        self.inputText =self.inputText .. love.textinput()
-    end
-    
-end ]]
-
-
---[[ function  TextField.textInputAll(list, t)
-    for _, tf in ipairs(list) do
-        print("bye")
-        tf:textinput(t)
-    end
-end ]]
-
-
-function TextField:textInput(t)
-    print("helo")
-    if self.isFocused then
-        self.inputText = self.inputText .. t
-    end
-    
-end
-
-
---[[ function love.textinput(t)
-    print("hamsa")
-    if this.isFocused then
-        TextField.inputText = TextField.inputText .. t
-    end
-end ]]
-
-
 function love.keypressed(key)
     if TextField.isFocused and key == "backspace" then
         print("eliminando caracter...")
@@ -111,7 +75,8 @@ end
 
 function TextField:getTexto()
     print("texto entregado")
-    return self.inputText or ""
+    print(self.inputText)
+    return self.inputText or "Anonimo"
 end
 
 return TextField

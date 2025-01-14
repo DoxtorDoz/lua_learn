@@ -8,9 +8,11 @@ menu.textfields = {}
 menu.opciones = 0
 
 
-function menu.load()
 
-    table.insert(menu.textfields, tf.new("Nombre",30, 50, 200, 30))
+
+function menu.load()
+    menu.usuario = tf.new("Nombre",30, 50, 200, 30)
+    table.insert(menu.textfields, menu.usuario)
     
     table.insert(menu.buttons, bt.new(350,320,100,40,"Comenzar",function ()
         menu.opciones = 1
@@ -26,7 +28,7 @@ function menu.new()
 end
 
 function menu.update()
-   --[[  for _, button in ipairs(menu.buttons) do
+    --[[  for _, button in ipairs(menu.buttons) do
         button:update()
     end ]]
     bt.updateAll(menu.buttons)

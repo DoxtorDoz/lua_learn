@@ -5,9 +5,9 @@ score.score = 0
 score.name = ""
 local score_font = love.graphics.newFont(20)
 
-function score.load()
+function score.load(w)
     local score_font = love.graphics.newFont(20)
-    score.name = tf:getTexto()
+    score.name = w
 end
 
 function score.draw()

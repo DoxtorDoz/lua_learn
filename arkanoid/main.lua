@@ -43,7 +43,7 @@ function love.update(dt)
         if t then --Para obtener el nombre sin llamar al metodo 9 millones de veces.
                     --Seguramente se pueda hacer mejor de otra forma
             t = false
-            score.load()
+            score.load(menu.usuario:getTexto())
         --lives.update()
         end
         platform.update(dt)
