@@ -1,67 +1,117 @@
 local label = require "/utils/label"
 
+local TextField = {}
 
-local textfield = {}
-textfield.position_x = 10
-textfield.position_y = 20
-textfield.width = 100
-textfield.height = 50
+TextField.__index  = TextField
 
+function TextField.new(text,x,y,w,h)
+    local self = setmetatable({}, TextField)
+    self.position_x = x
+    self.position_y = y
+    self.width = w
+    self.height = h
+    self.text = text or ""
+    self.isFocused = false
+    self.isHovered = false
+    self.inputText = ""
+    return self
+end
 
-textfield.isFocused = false
-textfield.inputText = ""
-
-function textfield.values(x, y, w, h)
-    textfield.position_x = x
-    textfield.position_y = y
-    textfield.width = w
-    textfield.height = h
+function TextField.drawTextFields(list)
+    for _, tf in ipairs(list) do
+        tf:draw()
+    end
     
 end
 
-function textfield.draw_with_label(labelText, x, y, w, h)
-    label.draw(labelText, textfield.position_x, textfield.position_y - 20)
-    textfield.values(x,y,w,h)
-    textfield.draw()
-
-    
-end
-
-function textfield.draw()
-    love.graphics.rectangle("line",
-        textfield.position_x, 
-        textfield.position_y,
-        textfield.width,
-        textfield.height)
-
-    love.graphics.print(textfield.inputText, textfield.position_x + 10, textfield.position_y + 10)
-end
-
-function love.mousepressed(x, y, button)
-    if button == 1 then
-        if x > textfield.position_x and x <= textfield.position_x + textfield.width and y > textfield.position_y and y <= textfield.position_y + textfield.height then
-            textfield.isFocused = true
-        else
-            textfield.isFocused = false
+function TextField:update()
+    local mouseX, mouseY = love.mouse.getPosition()
+    local mousepressed = love.mouse.isDown(1)
+    self.isHovered = mouseX > self.position_x 
+        and mouseX <= self.position_x + self.width
+        and mouseY > self.position_y
+        and mouseY <= self.position_y + self.height    
+        if self.isHovered and mousepressed then
+            --print("Encima")
+            --self:mousepressed()
+            self.isFocused = true
+        elseif mousepressed then
+            self.isFocused = false
         end
-    end
 end
 
-function love.textinput(t)
-    if textfield.isFocused then
-        textfield.inputText = textfield.inputText .. t
+function TextField.updateAll(list)
+    for _, tf in ipairs(list) do
+        tf:update()
     end
+    
 end
 
-function  love.keypressed(key)
-    if textfield.isFocused and key == "backspace" then
+
+
+function TextField:draw()
+    label.draw(self.text, self.position_x, self.position_y - 20)
+    love.graphics.rectangle("line",
+        self.position_x, 
+        self.position_y,
+        self.width,
+        self.height)
+
+    love.graphics.print(self.inputText, self.position_x + 10, self.position_y - self.height/3)
+end
+
+--[[ function TextField:mousepressed()
+    if love.mouse.isDown(1) then
+        print("click")
+        self.isFocused = true
+    else
+        self.isFocused = true
+    end
+end ]]
+
+--[[ function TextField:handleInput(t)
+    if self.isFocused then
+        self.inputText =self.inputText .. love.textinput()
+    end
+    
+end ]]
+
+
+--[[ function  TextField.textInputAll(list, t)
+    for _, tf in ipairs(list) do
+        print("bye")
+        tf:textinput(t)
+    end
+end ]]
+
+
+function TextField:textInput(t)
+    print("helo")
+    if self.isFocused then
+        self.inputText = self.inputText .. t
+    end
+    
+end
+
+
+--[[ function love.textinput(t)
+    print("hamsa")
+    if this.isFocused then
+        TextField.inputText = TextField.inputText .. t
+    end
+end ]]
+
+
+function love.keypressed(key)
+    if TextField.isFocused and key == "backspace" then
         print("eliminando caracter...")
-        textfield.inputText = textfield.inputText:sub(1, -2)
+        TextField.inputText = TextField.inputText:sub(1, -2)
     end
 end
 
-function textfield.getTexto()
+function TextField:getTexto()
     print("texto entregado")
-    return textfield.inputText
+    return self.inputText or ""
 end
-return textfield
+
+return TextField

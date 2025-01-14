@@ -7,7 +7,7 @@ local score_font = love.graphics.newFont(20)
 
 function score.load()
     local score_font = love.graphics.newFont(20)
-    score.name = tf.getTexto()
+    score.name = tf:getTexto()
 end
 
 function score.draw()

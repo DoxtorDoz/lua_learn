@@ -25,7 +25,7 @@ end
 function Button:draw()
     love.graphics.rectangle("line", self.position_x, self.position_y, self.width, self.height)
     
-    love.graphics.print(self.text, self.position_x + self.width / 2, self.position_y + self.height / 2)
+    love.graphics.printf(self.text, self.position_x, self.position_y + self.height/3, self.width, "center")
 end
 
 function Button:update()
@@ -38,6 +38,13 @@ function Button:update()
             --print("Encima")
             self:mousepressed()
         end
+end
+
+function Button.updateAll(list)
+    for _, bt in ipairs(list) do
+        bt:update()
+    end
+    
 end
 
 function Button:mousepressed()

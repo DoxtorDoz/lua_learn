@@ -8,10 +8,10 @@ platform.height = 20
 
 
 function platform.update(dt)
-    if love.keyboard.isDown("right") then
+    if love.keyboard.isDown("right") or love.keyboard.isDown('d') then
         platform.position_x = platform.position_x + (platform.speed_x * dt)
     end
-    if love.keyboard.isDown("left") then
+    if love.keyboard.isDown("left") or love.keyboard.isDown('a') then
         platform.position_x = platform.position_x - (platform.speed_x * dt)
     end
 end
