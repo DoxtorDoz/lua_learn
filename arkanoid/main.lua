@@ -8,7 +8,7 @@ local menu = require "/components/menu"
 local score = require "/logic/score"
 local lives = require "/logic/lives"
 local gameover = require "/components/gameover"
-local button = require "/utils/button"
+
 
 --local colors = require "/components/colors"
 local gamestate = "menu"
@@ -51,6 +51,8 @@ function love.update(dt)
         levels.switch_next_level(bricks, ball)
         score.update()
     elseif gamestate == "finished" then
+    elseif gamestate == "game_over" then
+        gameover.update(menu.game, score.score, score.name)
     end
 
     if lives.lives == 0 then

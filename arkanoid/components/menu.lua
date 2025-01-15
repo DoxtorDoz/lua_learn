@@ -1,11 +1,13 @@
 local tf = require "/utils/textfield"
 local bt = require "/utils/button"
+local Game = require "/logic/game"
 
 local menu = {}
 menu.__index = menu
 menu.buttons = {}
 menu.textfields = {}
 menu.opciones = 0
+menu.game = nil
 
 
 
@@ -21,6 +23,8 @@ function menu.load()
     table.insert(menu.buttons, bt.new(365,370,70,40,"Salir",function ()
         menu.opciones = -1
     end))
+
+    menu.game = Game:new()
 end
 
 function menu.new()
@@ -36,7 +40,12 @@ function menu.update()
     tf.updateAll(menu.textfields)
 end
 
+function menu.draw_bestScore()
+    love.graphics.printf(menu.game.max_name.."\n"..menu.game.max_score, 500,500,200,"center")
+end
+
 function menu.draw()
+    menu.draw_bestScore()
     bt.drawButtons(menu.buttons)
     tf.drawTextFields(menu.textfields)
     love.graphics.printf( "Arkanoide :D\n" ..
