@@ -9,7 +9,6 @@ local score = require "/logic/score"
 local lives = require "/logic/lives"
 local gameover = require "/components/gameover"
 
-
 --local colors = require "/components/colors"
 local gamestate = "menu"
 local t = true
