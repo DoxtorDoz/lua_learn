@@ -45,7 +45,6 @@ function love.update(dt)
         end
         platform.update(dt)
         ball.update(dt, platform)
-        
         bricks.update(dt)
         walls.update(dt)
         collisions.resolve_collisions(ball, platform, walls, bricks)
@@ -62,6 +61,10 @@ end
 
 
 function love.draw()
+
+    love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
+
+    
     if gamestate == "menu" then
         menu.draw()
     elseif gamestate == "pause" then

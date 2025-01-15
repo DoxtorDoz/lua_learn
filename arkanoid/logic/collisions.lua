@@ -2,6 +2,7 @@
 local sounds = require "sounds"
 local score  = require "/logic/score"
 local lives = require "/logic/lives"
+local explosion = require "/utils/explosion"
 
 local collisions = {}
 

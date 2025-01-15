@@ -1,4 +1,7 @@
 local colors = require "/utils/colors"
+local Explosion = require "/utils/explosion"
+
+local explosions = {}
 
 local bricks = {}
 bricks.position_x = 100
@@ -26,6 +29,10 @@ bricks.no_more_bricks = false
 function bricks.draw()
     for _, brick in pairs(bricks.current_level_bricks) do
         bricks.draw_brick(brick)
+    end
+
+    for _, exp in ipairs(explosions) do
+        exp:draw()
     end
 end
 
@@ -61,12 +68,18 @@ end
 
 
 function bricks.update(dt)
+    --print(dt)
     if  #bricks.current_level_bricks == 0 then
         bricks.no_more_bricks = true
     else
         for _, brick in pairs(bricks.current_level_bricks) do
             bricks.update_brick(brick)
         end
+    end
+
+    for _, exp in ipairs(explosions) do
+        
+        exp:update(dt)
     end
 end
 
@@ -93,7 +106,6 @@ function bricks.construct_level(levels_arr)
                 local new_brick_position_y = bricks.top_left_position_y + (row_i - 1) * (bricks.height + bricks.vertical_distance)
                 
                 local new_brick = bricks.new_brick(new_brick_position_x, new_brick_position_y, bricks.width,bricks.height,levels_arr[row_i][col_j])
-
                 bricks.add_to_current_level_bricks(new_brick)
             end
         end
@@ -102,16 +114,24 @@ end
 
 function bricks.degrade_brick(pos, brick)
     print("ladrillo degradado")
+    bricks.explosion(bricks.current_level_bricks[pos], 10)
     bricks.current_level_bricks[pos].type = brick.type - 1
-    bricks.update()
+    --bricks.update()
 end
 
 function bricks.remove_brick(brick)
     
     print("ladrillo eliminado")
+    bricks.explosion(bricks.current_level_bricks[brick], 30)
     table.remove(bricks.current_level_bricks, brick)
-    bricks.update()
+    --bricks.update()
 end
 
+function bricks.explosion(b, n)
+    print(b.height)
+    table.insert(explosions, Explosion.new(b.position_x + b.width/2, b.position_y + b.height/2, colors.colors[b.type], n))
+    print("exp anadida")
+    --table.insert(explosions, Explosion.new(300, 300, colors.colors[4], n))
+end
 
 return bricks
