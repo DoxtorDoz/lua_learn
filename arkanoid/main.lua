@@ -102,7 +102,6 @@ function love.keyreleased(key, code)
         if key == "escape" then
             gamestate = "pause"
         end
-        
     elseif gamestate == "pause" then
         if key == "return" then
             gamestate = "game"

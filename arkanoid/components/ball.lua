@@ -1,3 +1,5 @@
+local BallExplosion = require "/utils/ball_explosion"
+
 local ball = {}
 ball.position_x = 450
 ball.position_y = 450
@@ -6,6 +8,9 @@ ball.speed_y = 300
 ball.sticked = false
 
 ball.radius = 10
+
+local explosion = nil
+
 
 function ball.update(dt, platform)
     if not ball.sticked then
@@ -19,6 +24,13 @@ function ball.update(dt, platform)
             ball.start_move()
         end
     end
+
+    if explosion ~= nil then
+        explosion:update(dt)
+        if explosion.life_span <= 0 then
+            explosion = nil
+        end
+    end
 end
 
 
@@ -30,6 +42,11 @@ function ball.draw()
         ball.position_y,
         ball.radius,
         segment_in_circle)
+
+        if explosion ~= nil then
+            print("la explosion no es nula "..explosion.position_x)
+            explosion:draw()
+        end
     
 end
 
@@ -50,10 +67,11 @@ function ball.rebound(shift_ball_x, shift_ball_y)
     end
 end
 
-function ball.reposition()
+--[[ function ball.reposition()
     ball.position_x = 450
     ball.position_y = 450
 end
+ ]]
 
 function ball.stick_to_platform(platform)
     ball.sticked = true
@@ -66,6 +84,12 @@ end
 function ball.start_move()
     ball.speed_x = 300
     ball.speed_y = 300
+end
+
+
+function  ball.explosion()
+    explosion =  BallExplosion.new(ball.position_x, ball.position_y, ball.radius)
+    
 end
 
 return ball

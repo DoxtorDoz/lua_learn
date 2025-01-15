@@ -27,8 +27,7 @@ function TextField.drawTextFields(list)
     
 end
 
---TODO: ARREGAR PARA DEJAR DE TENER FOCUSEADO EL CAMPO DE TEXTO AL HACER CLICK O ENTER
---TODO: ANADIR TAMBIEN EL BORRADO COMO ANTES
+
 function TextField:update()
     --local mouseX, mouseY = love.mouse.getPosition()
     local mousepressed = love.mouse.isDown(1)
