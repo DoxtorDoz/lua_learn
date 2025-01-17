@@ -1,6 +1,10 @@
+local Debug_HUD = require "/utils/Debug_HUD"
+
 local Physics = {}
 
 local G = 6.67 * 10^(-1)
+
+
 
 
 function Physics.update(dt,player,world)
@@ -27,7 +31,8 @@ function Physics.update(dt,player,world)
             end
         end
     end ]]
-    print(#near_blocks)
+    --print(#near_blocks)
+    Debug_HUD.draw_neighbors(#near_blocks)
     if #near_blocks >= 1 then
         for i = 1, #near_blocks do
             --Physics.near_blocks_to_player(player, near_blocks[i])
@@ -74,7 +79,7 @@ function Physics.gravity_player_world(player, world, dt)
 
         player.position_x = player.position_x + player.speed_x * dt
         player.position_y = player.position_y + player.speed_y * dt
-     else
+    else
 
         local angle = math.atan(dy, dx)
         --player.position_x = center_x + r_min * math.cos(angle)
@@ -123,7 +128,7 @@ function Physics.resolve_collisions(a,b)
         else
             shift_b_y = a.y - (b.y + b.height)
         end
-        print("colision")
+        --print("colision")
     end
     return overlap, shift_b_x, shift_b_y
 end
@@ -151,7 +156,7 @@ function Physics.near_blocks_to_player(player, world)
                 -- Comprobar si los rectángulos se solapan (colisión AABB)
                 if block_right > player_left and block_left < player_right and
                     block_bottom > player_top and block_top < player_bottom then
-                        print("Bloque cerca en ("..block_left..", "..block_top..")")
+                        --print("Bloque cerca en ("..block_left..", "..block_top..")")
                         table.insert(nearBlocks, block)
                 end
             end

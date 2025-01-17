@@ -26,17 +26,23 @@ function Block:draw()
     
 end
 
-function Block:update()
-
+function Block:update(x,y,px,py)
+    local mouseX, mouseY = love.mouse.getPosition()
     if self.type == 1 then
         --local position_x = x*self.size + px
         --local position_y = y*self.size + py
 
-        local mouseX, mouseY = love.mouse.getPosition()
+       
         local isHover = mouseX > self.position_x and mouseX <= self.position_x + self.size and mouseY > self.position_y and mouseY <= self.position_y + self.size
-        if isHover then
+       --[[  if isHover then
             print("Encima del bloque ("..self.position_x..", "..self.position_y..")")
-        end
+        end ]]
+    end
+
+    if love.mouse.isDown("2") then
+        self.position_x =  x*self.size + px
+        self.position_y = y*self.size + py
+
     end
 end
 
