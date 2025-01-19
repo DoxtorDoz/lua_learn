@@ -1,5 +1,7 @@
+local MouseHover = require "/utils/mouseHover"
 local Block = require "/utils/block"
 local World = {}
+local angle  = 10
 
 World.__index = World
 
@@ -11,36 +13,35 @@ function World.new(name, r, px, py, tyle)
     self.radius = r
     self.tileSet = tyle or {}
     self.tileSize = 8
+    self.rotation = math.random(0,1)
+
     self.mass = 2 * math.pi * r * math.sqrt(r) * 1000
-    --self.mass  = 1000000
+    self.diameter = 2*self.radius
+    self.size = self.diameter * self.tileSize
+    self.angle = 0
+    
+    self.center_x = self.position_x + self.diameter * self.tileSize/2
+    self.center_y = self.position_y + self.diameter * self.tileSize/2
+
     self.planet = {}
 
     local baseX = 1000 * love.math.random()
 	local baseY = 1000 * love.math.random()
-    local diameter = 2* self.radius
-    for y=1, diameter do
+    --local diameter = 2* self.radius
+    for y=1, self.diameter do
         self.planet[y] = {}
-        for x = 1, diameter do
+        for x = 1, self.diameter do
             local deltaX = self.radius - x
             local deltaY = self.radius - y
             local distance = math.sqrt(deltaX^2 + deltaY^2)
 
-            if distance - self.radius < 0.5 or self.radius/distance > 5 then
+            if distance - self.radius < 0 or self.radius/distance > 5 then
                 self.planet[y][x] = love.math.noise(baseX+.1*x, baseY+.2*y)
-                --[[  if self.planet[y][x] > 0.6 then
-                    self.planet[y][x] = 1
-                elseif self.planet[y][x] >= 0.3 and self.planet[y][x] <= 0.6 then
-                    self.planet[y][x] = 0.5
-                else
-                    self.planet[y][x] = 0
-                end ]]
                 local position_x  = x*self.tileSize + self.position_x
                 local position_y  = y*self.tileSize + self.position_y
                 if self.planet[y][x] > 0.6 then
-                    --self.planet[y][x] = 1
                     self.planet[y][x] = Block.new(position_x,position_y,self.tileSize, 1)
                 else
-                    --self.planet[y][x] = 0
                     self.planet[y][x] = Block.new(position_x,position_y,self.tileSize, 0)
                 end
             else
@@ -52,64 +53,73 @@ function World.new(name, r, px, py, tyle)
 end
 
 function World:drawWorld()
-    --print("yes")
-    local diameter = self.radius * 2
-    for y = 1, diameter do
-        for x  =1, diameter do
-            --print(self.planet[y][x])
+
+    love.graphics.push()
+    --love.graphics.translate(self.center_x, self.center_y)
+    --love.graphics.rotate(self.angle)
+    --love.graphics.translate(-self.center_x, -self.center_y)
+
+    for y = 1, self.diameter do
+        for x  =1, self.diameter do
             if self.planet[y][x] ~= nil then
-
-                --print("h")
-                love.graphics.setColor(255, 255, 1, self.type)
-                self.planet[y][x]:draw(x,y,self.position_x, self.position_y)
-
-                --[[ if self.planet[y][x] == 1 then
-                    love.graphics.setColor(60,186,108)
-                else
-                    love.graphics.setColor(29,58,109)
-                end ]]
-                --love.graphics.setColor(1, 1, 1, self.planet[y][x])
-                --love.graphics.rectangle("fill", x*self.tileSize + self.position_x, y*self.tileSize + self.position_y, self.tileSize, self.tileSize)
+                self.planet[y][x]:draw(self.angle, self.center_x, self.center_y)
             end
         end
     end
 
-    local center_x = self.position_x + diameter* self.tileSize/2
-    local center_y = self.position_y + diameter* self.tileSize/2
-
+    love.graphics.pop()
+ 
+    --Pintar el centro
     love.graphics.setColor(1, 0, 255)
-    love.graphics.rectangle("fill",center_x, center_y, 8, 8)
+    love.graphics.rectangle("fill",self.center_x, self.center_y, 8, 8)
 
-    --love.graphics.print("Masa: "..self.mass, 600, 700)
-    --print("Masa: "..self.mass)
-    local angle = math.deg(math.atan(center_x, center_y))
-    --[[ if love.keyboard.isDown("right") or love.keyboard.isDown('d') then
-        print("rotate der")
-        love.graphics.rotate(angle)
-    end
-    if love.keyboard.isDown("left") or love.keyboard.isDown('a') then
-        print("rotate izq")
-        love.graphics.rotate(-angle)
-    end ]]
+    --Pintar el punto de inicio de creacion del planeta
+    love.graphics.setColor(0, 255, 255)
+    love.graphics.rectangle("fill",self.position_x, self.position_y, 8, 8)
+
+    love.graphics.circle("line", self.center_x, self.center_y, self.radius*self.tileSize + 10)
 end
 
 function World:update(dt)
 
     local mouseX, mouseY = love.mouse.getPosition()
 
+
     if love.mouse.isDown("2") then
+        
+    --if MouseHover.check(self.position_x, self.position_y, self.size, self.size) then
         self.position_x = mouseX
         self.position_y = mouseY
+
+        self.center_x = self.position_x + self.diameter * self.tileSize/2
+        self.center_y = self.position_y + self.diameter * self.tileSize/2
+    --end
+end
+
+--[[     if self.rotation == 1 then
+        self.angle = self.angle + dt * 0.1 
+    else
+        self.angle = self.angle - dt * 0.1 
     end
+    ]]
 
     --actualizar cada boque del mundo
-    for y = 1, self.radius*2 do
-        for x = 1, self.radius*2 do
+    for y = 1, self.diameter do
+        for x = 1, self.diameter do
             if self.planet[y][x] ~= nil then
-                self.planet[y][x]:update(x,y, self.position_x, self.position_y)
+                if love.keyboard.isDown("d") then
+                   self.angle = self.angle + dt * 0.001 
+                elseif love.keyboard.isDown("a") then
+                    self.angle = self.angle - dt * 0.001 
+                end
+                self.planet[y][x]:update(x,y,self)
             end
+            
         end
     end
 end
+
+
+
 
 return World

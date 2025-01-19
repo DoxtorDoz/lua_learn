@@ -2,9 +2,24 @@ local Debug_HUD = require "/utils/Debug_HUD"
 
 local Physics = {}
 
+local debug 
+local vecinos = 0
+local colisiones = false
+
 local G = 6.67 * 10^(-1)
 
+function Physics.load()
+    debug = Debug_HUD.new()
+end
 
+function Physics.draw()
+    debug:draw()
+end
+
+    --[[2 conceptos:
+            1. Gravedad respecto al planeta
+            2. Colisiones con los bloques que forman el planeta
+    ]]
 
 
 function Physics.update(dt,player,world)
@@ -17,51 +32,36 @@ function Physics.update(dt,player,world)
         height = player.height
     }
     local near_blocks = Physics.near_blocks_to_player(player, world)
-
---[[     for y = 1, world.radius*2 do
-        for x = 1, world.radius*2 do
-            if world.planet[y][x] ~= nil then
-                local b = {
-                    x = world.planet[y][x].position_x,
-                    y = world.planet[y][x].position_y,
-                    width = world.planet[y][x].size,
-                    height = world.planet[y][x].size
-                }
-                Physics.blocks_player_collision(a,b)
-            end
-        end
-    end ]]
-    --print(#near_blocks)
-    Debug_HUD.draw_neighbors(#near_blocks)
+    vecinos =  tonumber(#near_blocks) or 0
     if #near_blocks >= 1 then
         for i = 1, #near_blocks do
-            --Physics.near_blocks_to_player(player, near_blocks[i])
-            local block = near_blocks[i]
+
             local b = {
-                x = block.position_x*block.size +world.position_x,
-                y = block.position_y*block.size + world.position_y,
+                x = world.center_x,
+                y = world.center_y,
                 width = near_blocks[i].size,
                 height = near_blocks[i].size
             }
-            Physics.resolve_collisions(a, b)
+            local overlap, z,w = Physics.resolve_collisions(a, b)
+            colisiones = true
+            
         end
+    else
+        colisiones = false
     end
+    debug:update(vecinos, colisiones, player)
 end
 
 function Physics.gravity_player_world(player, world, dt)
-    local center_x = world.position_x + world.radius*2*world.tileSize/2
-    local center_y = world.position_y + world.radius*2*world.tileSize/2
 
-    local dx = center_x - player.position_x
-    local dy = center_y - player.position_y
-
+    local dx = world.center_x - player.position_x
+    local dy = world.center_y - player.position_y
 
     local r = math.sqrt(dx^2 + dy^2)
 
-
     if r < 1 then r = 1 end
 
-    local f = (G * world.mass * player.mass) / (r^2)
+    
 
     --[[La fuerza de la gravedad se descompone en Fx y Fy para permitir el control de
     las velocidades y de sus respectivas posiciones.
@@ -69,7 +69,6 @@ function Physics.gravity_player_world(player, world, dt)
 
     local r_min = world.radius*8
     if r > r_min then
-
         local f = (G * world.mass * player.mass) / (r^2)
         local fx = f * (dx / r)
         local fy = f * (dy / r)
@@ -80,10 +79,6 @@ function Physics.gravity_player_world(player, world, dt)
         player.position_x = player.position_x + player.speed_x * dt
         player.position_y = player.position_y + player.speed_y * dt
     else
-
-        local angle = math.atan(dy, dx)
-        --player.position_x = center_x + r_min * math.cos(angle)
-        --player.position_y = center_y + r_min * math.sin(angle)
         player.position_x = player.position_x 
         player.position_y = player.position_y
 
@@ -91,15 +86,9 @@ function Physics.gravity_player_world(player, world, dt)
         player.speed_x = 0
         player.speed_y = 0
     end 
-    
-
-
-
 end
 
-function Physics.gravity_world()
-    
-end
+
 
 function Physics.blocks_player_collision(player, block)
     local overlap, shift_b_x, shift_b_y = Physics.resolve_collisions(player,block)
@@ -107,10 +96,12 @@ function Physics.blocks_player_collision(player, block)
     if overlap then
         player.speed_x = 0
         player.speed_y = 0
-        player.position_x = player.position_x 
-        player.position_y = player.position_y
+        player.position_x = player.position_x -shift_b_x
+        player.position_y = player.position_y -shift_b_y
     end
 end
+
+
 
 function Physics.resolve_collisions(a,b)
     local overlap = false
@@ -128,16 +119,16 @@ function Physics.resolve_collisions(a,b)
         else
             shift_b_y = a.y - (b.y + b.height)
         end
-        --print("colision")
+        
     end
+    colisiones = overlap
     return overlap, shift_b_x, shift_b_y
 end
 
 function Physics.near_blocks_to_player(player, world)
-    --print("r = "..world.radius)
     local nearBlocks = {}
     local diameter = world.radius * 2
-    local detection_range = 1 --10px de distancia para sacar los bloques
+    local detection_range = 0 --10px de distancia para sacar los bloques
 
     local player_left   = player.position_x - detection_range
     local player_right  = player.position_x + player.width + detection_range
@@ -153,7 +144,6 @@ function Physics.near_blocks_to_player(player, world)
                 local block_top    = block.position_y
                 local block_bottom = block.position_y + block.size
 
-                -- Comprobar si los rectángulos se solapan (colisión AABB)
                 if block_right > player_left and block_left < player_right and
                     block_bottom > player_top and block_top < player_bottom then
                         --print("Bloque cerca en ("..block_left..", "..block_top..")")

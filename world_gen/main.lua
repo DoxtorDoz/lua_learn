@@ -1,20 +1,23 @@
 local World = require "/utils/world"
 local Player = require "/logic/player"
 local Physics = require "/logic/physics"
+local Debug_HUD = require "/utils/Debug_HUD"
 
 local worlds = {}
 local player = nil
 
 function love.load()
     --love.window.setMode(1, 2)
-    table.insert(worlds,World.new("Toad",24,100,100,{}))
-    --table.insert(worlds,World.new("Road",20,300,300,{}))
+    table.insert(worlds,World.new("Toad",30,100,100,{}))
+    --table.insert(worlds,World.new("Road",12,300,300,{}))
+    --table.insert(worlds,World.new("Fload",8,400,300,{}))
     
     player = Player.new("Frogg", 400, 100)
+
+    Physics.load()
 end
 
 function love.update(dt)
-    
 
     for _,planet in ipairs(worlds) do
         planet:update(dt)
@@ -29,13 +32,22 @@ function love.update(dt)
 end
 
 function love.draw()
-    for _,p in ipairs(worlds) do
-        p:drawWorld()
-    end
 
+    
     if player ~= nil then
         player:draw()
     end
+
+
+    for _,p in ipairs(worlds) do
+        p:drawWorld()
+        love.graphics.setColor(255,0,0)
+        love.graphics.line(p.center_x, p.center_y, player.position_x, player.position_y)
+    end
+
+
+    --Debug_HUD.draw()
+    Physics.draw()
     
 end
 

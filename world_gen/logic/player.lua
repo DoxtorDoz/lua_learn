@@ -15,6 +15,7 @@ function Player.new(name, x, y)
     self.speed_y = 0
     self.width = 10
     self.height = 20
+    self.angle = 0
 
     return self
 end
@@ -28,20 +29,20 @@ end
 
 --TODO: CORREGIR LOS MOVIMIENTOS
 function Player:update(dt)
-    if love.keyboard.isDown("right") or love.keyboard.isDown('d') then
+    if love.keyboard.isDown("right") then
         self.speed_x = 300
         self.position_x = self.position_x + self.speed_x*dt
     end
-    if love.keyboard.isDown("left") or love.keyboard.isDown('a') then
+    if love.keyboard.isDown("left") then
         self.speed_x = 300
         self.position_x = self.position_x - self.speed_x*dt
     end
-    if love.keyboard.isDown("up") or love.keyboard.isDown('w') then
+    if love.keyboard.isDown("up") then
         self.speed_y = 1000
         self.position_y = self.position_y - self.speed_y*dt
         self.position_x = self.position_x - self.speed_x*dt
     end
-    if love.keyboard.isDown("down") or love.keyboard.isDown('s') then
+    if love.keyboard.isDown("down") then
         self.speed_y = 300
         self.position_y = self.position_y + self.speed_y*dt
         self.position_x = self.position_x + self.speed_x*dt
@@ -52,6 +53,18 @@ function Player:update(dt)
         self.position_x = mouseX
         self.position_y = mouseY
     end
+    
+end
+
+function Player:jump()
+    
+end
+
+function Player:walk(direction)
+    
+end
+
+function Player:align_planet()
     
 end
 
