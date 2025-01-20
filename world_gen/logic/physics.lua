@@ -43,7 +43,7 @@ function Physics.update(dt,player,world)
                 height = near_blocks[i].size
             }
             local overlap, z,w = Physics.resolve_collisions(a, b)
-            colisiones = true
+            colisiones = overlap
             
         end
     else
@@ -67,7 +67,7 @@ function Physics.gravity_player_world(player, world, dt)
     las velocidades y de sus respectivas posiciones.
     ]]
 
-    local r_min = world.radius*8
+    local r_min = world.radius*world.tileSize
     if r > r_min then
         local f = (G * world.mass * player.mass) / (r^2)
         local fx = f * (dx / r)
@@ -93,11 +93,24 @@ end
 function Physics.blocks_player_collision(player, block)
     local overlap, shift_b_x, shift_b_y = Physics.resolve_collisions(player,block)
 
-    if overlap then
+    --[[ if overlap then
         player.speed_x = 0
         player.speed_y = 0
         player.position_x = player.position_x -shift_b_x
         player.position_y = player.position_y -shift_b_y
+    end ]]
+end
+
+function Physics.draw_blocks_collision(blocks)
+    for _, block in ipairs(blocks) do
+        
+        local p1 = {block.position_x, block.position_y}
+        local p2 = {block.position_x + block.size, block.position_y}
+        local p3 = {block.position_x + block.size, block.position_y + block.size}
+        local p4 = {block.position_x, block.position_y + block.size}
+        
+        love.graphics.setColor(0, 0, 255)
+        love.graphics.line(p1[1],p1[2],p2[1],p2[2],p3[1],p3[2],p4[1],p4[2])
     end
 end
 
@@ -127,31 +140,25 @@ end
 
 function Physics.near_blocks_to_player(player, world)
     local nearBlocks = {}
-    local diameter = world.radius * 2
-    local detection_range = 0 --10px de distancia para sacar los bloques
+    local detection_range = (player.height + player.width)/2 --10px de distancia para sacar los bloques
 
     local player_left   = player.position_x - detection_range
     local player_right  = player.position_x + player.width + detection_range
     local player_top    = player.position_y - detection_range
     local player_bottom = player.position_y + player.height + detection_range
 
-    for y = 1, diameter do
-        for x = 1, diameter do
-            if world.planet[y][x] ~= nil and world.planet[y][x].type == 1 then
-                local block = world.planet[y][x]
-                local block_left   = block.position_x
-                local block_right  = block.position_x + block.size
-                local block_top    = block.position_y
-                local block_bottom = block.position_y + block.size
-
-                if block_right > player_left and block_left < player_right and
-                    block_bottom > player_top and block_top < player_bottom then
-                        --print("Bloque cerca en ("..block_left..", "..block_top..")")
-                        table.insert(nearBlocks, block)
-                end
-            end
+    for _, block in ipairs(world.planet) do
+        local block_left   = block.position_x
+        local block_right  = block.position_x + block.size
+        local block_top    = block.position_y
+        local block_bottom = block.position_y + block.size
+        
+        if block.type == 1 and ( block_right > player_left and block_left < player_right and
+            block_bottom > player_top and block_top < player_bottom) then
+                table.insert(nearBlocks, block)
         end
     end
+
     return nearBlocks
 end
 

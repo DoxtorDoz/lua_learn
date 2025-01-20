@@ -23,8 +23,10 @@ end
 function Player:draw()
     --love.graphics.setColor(60,186,108)
     love.graphics.setColor(255,0,0)
-    love.graphics.rectangle("fill", self.position_x, self.position_y, 5, 10)
-    --print("h")
+    love.graphics.rectangle("fill", self.position_x, self.position_y, self.width, self.height)
+
+    --love.graphics.setColor(0,255,0)
+    --love.graphics.rectangle("line", self.position_x, self.position_y, )
 end
 
 --TODO: CORREGIR LOS MOVIMIENTOS

@@ -1,14 +1,13 @@
 local World = require "/utils/world"
 local Player = require "/logic/player"
 local Physics = require "/logic/physics"
-local Debug_HUD = require "/utils/Debug_HUD"
 
 local worlds = {}
 local player = nil
 
 function love.load()
     --love.window.setMode(1, 2)
-    table.insert(worlds,World.new("Toad",30,100,100,{}))
+    table.insert(worlds,World.new("Toad",12,100,100,{}))
     --table.insert(worlds,World.new("Road",12,300,300,{}))
     --table.insert(worlds,World.new("Fload",8,400,300,{}))
     
@@ -43,6 +42,7 @@ function love.draw()
         p:drawWorld()
         love.graphics.setColor(255,0,0)
         love.graphics.line(p.center_x, p.center_y, player.position_x, player.position_y)
+        Physics.draw_blocks_collision(p.planet)
     end
 
 
@@ -54,6 +54,13 @@ end
 function love.conf(t)
     t.console  = true
     --t.window.setTitle("Arkanoide")
+end
+
+function  love.keyreleased(key, code)
+    if key == "escape" then
+        love.event.quit()
+    end
+    
 end
 
 love._openConsole()

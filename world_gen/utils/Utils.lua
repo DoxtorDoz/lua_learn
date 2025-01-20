@@ -14,6 +14,4 @@ function Utils.rotate_point(x,y, angle)
     return dx, dy
 end
 
-
-
 return Utils
