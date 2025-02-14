@@ -104,12 +104,17 @@ end
 function Physics.draw_blocks_collision(blocks)
     for _, block in ipairs(blocks) do
         
-        local p1 = {block.position_x, block.position_y}
-        local p2 = {block.position_x + block.size, block.position_y}
-        local p3 = {block.position_x + block.size, block.position_y + block.size}
-        local p4 = {block.position_x, block.position_y + block.size}
+        local p1 = {block.puntos[1][1], block.puntos[1][2]}
+        local p2 = {block.puntos[2][1], block.puntos[2][2]}
+        local p3 = {block.puntos[3][1], block.puntos[3][2]}
+        local p4 = {block.puntos[4][1], block.puntos[4][2]}
+
+        if block.type == 0 then
+            love.graphics.setColor(0, 0, 255, 0.5)
+        else
+            love.graphics.setColor(255, 0, 0)
+        end
         
-        love.graphics.setColor(0, 0, 255)
         love.graphics.line(p1[1],p1[2],p2[1],p2[2],p3[1],p3[2],p4[1],p4[2])
     end
 end
@@ -140,7 +145,7 @@ end
 
 function Physics.near_blocks_to_player(player, world)
     local nearBlocks = {}
-    local detection_range = (player.height + player.width)/2 --10px de distancia para sacar los bloques
+    local detection_range =  0--(player.height + player.width)/2 --10px de distancia para sacar los bloques
 
     local player_left   = player.position_x - detection_range
     local player_right  = player.position_x + player.width + detection_range

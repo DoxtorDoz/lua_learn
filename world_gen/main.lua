@@ -7,7 +7,7 @@ local player = nil
 
 function love.load()
     --love.window.setMode(1, 2)
-    table.insert(worlds,World.new("Toad",12,100,100,{}))
+    table.insert(worlds,World.new("Toad",8,100,100,{}))
     --table.insert(worlds,World.new("Road",12,300,300,{}))
     --table.insert(worlds,World.new("Fload",8,400,300,{}))
     

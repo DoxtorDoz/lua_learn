@@ -34,7 +34,7 @@ end
 function World:drawWorld()
     love.graphics.push()
     love.graphics.translate(self.center_x, self.center_y)
-    love.graphics.rotate(self.angle)
+    --love.graphics.rotate(self.angle)
     love.graphics.translate(-self.center_x, -self.center_y)
 
     for _,block in ipairs(self.planet) do
@@ -67,18 +67,18 @@ function World:update(dt)
     end
 
     if love.keyboard.isDown("d") then
-        self.angle = self.angle + dt * 0.001 
+        self.angle = self.angle + dt * 0.1 
     elseif love.keyboard.isDown("a") then
-         self.angle = self.angle - dt * 0.001 
+         self.angle = self.angle - dt * 0.1 
     elseif love.keyboard.isDown("space") then
         self.angle = 0
     end
 
     for _, block in ipairs(self.planet) do
         if love.keyboard.isDown("d") then
-            self.angle = self.angle + dt * 0.001 
+            self.angle = self.angle + dt * 0.01 
         elseif love.keyboard.isDown("a") then
-             self.angle = self.angle - dt * 0.001 
+             self.angle = self.angle - dt * 0.01 
         end
 
         block:update(self,dt)
@@ -97,13 +97,6 @@ function World:update(dt)
         self.angle = self.angle - dt * 0.1 
     end
     ]]
-
-
-    
-
-   --[[  for _,block in ipairs(self.planet) do
-        block:update(self,dt)
-    end ]]
 end
 
 --[[
@@ -130,9 +123,9 @@ function World:generate_world()
                 local position_y  = y * self.tileSize + self.position_y
 
                 if gen[y][x] > 0.6 then
-                    gen[y][x] = Block.new(position_x - self.center_x,position_y - self.center_y ,self.tileSize, 1)
+                    gen[y][x] = Block.new(position_x ,position_y ,self.tileSize, 1)
                 else
-                    gen[y][x] = Block.new(position_x - self.center_x,position_y - self.center_y ,self.tileSize, 0)
+                    gen[y][x] = Block.new(position_x ,position_y ,self.tileSize, 0)
                 end
             else
                 gen[y][x] = nil
